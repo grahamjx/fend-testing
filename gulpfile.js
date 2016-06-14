@@ -8,11 +8,16 @@ var gulp = require('gulp'),
     inlinesource = require('gulp-inline-source'),
     site = '';
 
-gulp.task('build', ['scripts', 'styles','html']);
+    var filesToMove = [
+            'src/jasmine/**/*.*',
+            'src/fonts/**/*.*',
+        ];
+
+gulp.task('build', ['scripts', 'styles','html', 'support']);
 gulp.task('serve',['build','connect']);
 
 gulp.task('scripts', function(){
-  gulp.src('src/*/*.js')
+  gulp.src('src/js/*.js')
     .pipe(uglify())
     .pipe(rename(function(path) {
       path.dirname += "/js";
@@ -23,7 +28,7 @@ gulp.task('scripts', function(){
 });
 
 gulp.task('styles', function(){
-  gulp.src('src/*/*.css')
+  gulp.src('src/css/*.css')
     .pipe(csso())
     .pipe(rename(function(path) {
       path.dirname += "/css";
@@ -38,18 +43,22 @@ gulp.task('html', function(){
     .pipe(inlinesource())
     .pipe(replace({
       'css':{
-        src: ['css/normalize.min.css', 'css/icomoon.min.css', 'css/style.min.css', 'jasmine/lib/jasmine-2.1.2/jasmine.min.css'],
+        src: ['css/normalize.min.css', 'css/icomoon.min.css', 'css/style.min.css'],
         tpl: '<link rel="stylesheet" href="%s">'
-      }
+      },
       'js': {
-        src: ['jasmine/lib/jasmine-2.1.2/jasmine.min.js', 'jasmine/lib/jasmine-2.1.2/jasmine-html.min.js', 'jasmine/lib/jasmine-2.1.2/boot.min.js',
-              'js/app.min.js', 'jasmine/spec/feedreader.min.js'],
+        src: 'js/app.min.js',
         tpl: '<script src="%s"></script>'
       }
     }))
     .pipe(htmlmin())
     .pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('support', function() {
+    gulp.src(filesToMove, { base: 'src' })
+      .pipe(gulp.dest('dist'));
 });
 
 gulp.task('connect', function() {
