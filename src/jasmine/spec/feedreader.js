@@ -106,8 +106,8 @@ $(function() {
          * Remember, loadFeed() is asynchronous.
          */
 
-         it('feed content has changed', function(){
-           loadFeed(0, function(done) {
+         it('feed content has changed', function(done){
+           loadFeed(0, function() {
              expect($('.feed').html()).not.toEqual(oldFeed);
              done();
            });
