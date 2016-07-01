@@ -95,9 +95,9 @@ $(function() {
          var oldFeed;
 
          beforeEach(function(done) {
-           loadFeed(0, function() {
+           loadFeed(1, function() {
              oldFeed = $('.feed').html();
-             loadFeed(1, done);
+             done();
            });
          });
 
@@ -107,7 +107,10 @@ $(function() {
          */
 
          it('feed content has changed', function(){
-           expect($('.feed').html()).not.toEqual(oldFeed);
+           loadFeed(0, function(done) {
+             expect($('.feed').html()).not.toEqual(oldFeed);
+             done();
+           });
          });
     });
 }());
